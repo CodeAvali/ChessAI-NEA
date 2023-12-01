@@ -1,14 +1,16 @@
 [tool.poetry]
-name = "python-template"
+name = "repl-nix-chessai-nea"
 version = "0.1.0"
 description = ""
 authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "repl_nix_chessai_nea"}]
 
 [tool.poetry.dependencies]
-python = ">=3.10.0"
-pygame = "^2.1.2"
-dearpygui = "^1.6.2"
+python = "^3.10"
+numpy = "^1.26.2"
+
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
