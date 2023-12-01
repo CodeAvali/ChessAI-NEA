@@ -1,6 +1,7 @@
 # CodeAvali - Educational Chessbot demonstration - LAST UPDATED: 29/11/23
 
 import numpy as np
+space = ' '
 
 # (3). Turns function
 
@@ -25,7 +26,7 @@ W_Rook = '♖'
 B_Rook = '♜'
 W_Quee = '♕'
 B_Quee = '♛'
-W_King = '♔'
+W_King = '♔'  
 B_King = '♛'
 Empty_ = '-'
 
@@ -58,11 +59,24 @@ while Playing:
   Valid = False
   while not Valid: 
     Valid = True
-    #Get inputs from users
-    move_from = input("location to move from, {x, y}       ")
+    #Get inputs from users - using string literals to produce visual spacing
+    move_from = input(f"location to move from, (x,y) {space*10}")
+    move_to = input(f"location to move to, (x, y) {space*11}")     
+
+    #Normalise y to what is expected
+    move_fromx, move_fromy = move_from.split(",")
+    move_fromy = (int(move_fromy) - 9) * -1
+    move_from = move_fromx + "," + str(move_fromy)
+
+    move_tox, move_toy = move_to.split(",")
+    move_toy = (int(move_toy) - 9) * -1
+    move_to = move_tox + "," + str(move_toy)
+
+    #Create into a tuple
     move_from = tuple((int(x)-1) for x in move_from.split(","))
-    move_to = input("location to move to, {x, y}         ")
     move_to = tuple((int(x)-1) for x in move_to.split(","))
+
+    print(move_from, move_to)
 
     #Perform basic validation for moves
     Exception = ''
@@ -89,8 +103,6 @@ while Playing:
 
     if Exception != '':
       print(Exception)
-      
-  print(move_from, move_to)
 
   #Printing inputs
   peice = board[(move_from[1])][(move_from[0])]  #Collect moving peice into temp variable 
