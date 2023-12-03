@@ -4,8 +4,6 @@ import numpy as np
 space = ' '
 
 global White_Playing
-global White_moves
-global Black_moves 
 
 # (3). Turns function
 
@@ -21,7 +19,7 @@ def turn(Time_Stamp):
 
 def action(move_to, move_from):
 
-  #Normalise y to what is expecteD
+  #Normalise y to what is expected
   move_fromx, move_fromy = move_from.split(",")
   move_fromy = (int(move_fromy) - 9) * -1
   move_from = move_fromx + "," + str(move_fromy)
@@ -34,7 +32,7 @@ def action(move_to, move_from):
   move_from = tuple((int(x)-1) for x in move_from.split(","))
   move_to = tuple((int(x)-1) for x in move_to.split(","))
 
-  return move_to, move_from 
+  return move_from, move_to
 
   #----
 
@@ -66,91 +64,59 @@ def absurd(move_to, move_from):
 def perform(move_to, move_from, board):
 
   #Performing moves
-  print("TEST:", move_to, move_from)
-  
   peice = board[(move_from[1])][(move_from[0])]  #Collect moving peice into temp variable 
   board[(move_from[1])][(move_from[0])] = Empty_  #Remove moving peice
   board[(move_to[1])][(move_to[0])] = peice #Hence, write the peice into the location 
 
   #Check for peice to generate new moves
   if peice == W_Pawn or peice == B_Pawn:
-    New_moves = pawn((move_to[0], move_to[1]), White_Playing)
-  elif peice == (W_Rook or B_Rook) or peice == (W_Queen or B_Queen):
-    New_moves = straight((move_to[0], move_to[1]), White_Playing)
+    New_moves = pawn((move_to[1], move_to[1]), White_Playing)
 
-  White_moves = New_moves 
-
-  return board
+  return board 
 
   #----
 
 def pawn(create, White_Playing):
   #from inital, collect the x and y components 
 
-  create_x, create_y = create[0], create[1]
+  create_x, create_y = create.split(",")
+  create_y = (int(create_y) - 9) * -1  #Normalise y
 
-  #Hence, create a tuple containing new moves 
+  #Hence, create list of tuples
 
   new = ()
 
   if White_Playing:
-    print("White playing", new)
-    create_y -= 1
-    temp = str(create_x) + "" + str(create_y)
-    new += (create, tuple(temp))
-    #Add any additional conditions - Capture; enpassant 
-  else: 
     create_y += 1
-    temp = (create_x, create_y)
-    new += (create, tuple(temp))                                 #PERFECT METHOD for masked tuple - yayayaya
-    #Add any additional conditions - Caputre; enpassant 
-    
+    new += (create, (create_x, create_y))
+    if create_y != 8:
+      create_y += 1
+      new += (create, (str(create_x) + "," str(create_y)))
+
+  else: 
+    create_y -= 1
+    new += (create, (create_x, create_y))
+    if create_y != 1:
+      create_y -= 1
+      new += (create, (str(create_x) + "," str(create_y)))
+
 
   print(new)
-  
   return new
 
-  #-----
 
-def straight(create, White_playing):
-  #from inital, collect the x and y components
 
-  create_x, create_y = create[0], create[1]
 
-  #Hence, create a tuple of new moves
 
-  new = ()
-  mod = ()
 
-  x_pointer = create_x
-  while x_pointer < 7:
-    x_pointer += 1
-    temp = str(x_pointer) + "" + str(create_y)
-    new += (create, tuple(temp))
-  x_pointer = create_x
-  while x_pointer > 0:
-    x_pointer -= 1 
-    temp = str(x_pointer) + "" + str(create_y)
-    temp = tuple(temp)
-    new += (create, tuple(temp))
 
-  y_pointer = create_y 
-  while y_pointer < 7:
-    y_pointer += 1
-    temp = str(create_x) + "" + str(y_pointer)
-    new += (create, tuple(temp))
-  y_pointer = create_y
-  while y_pointer > 0:
-    y_pointer -= 1 
-    temp = str(create_x) + "" + str(y_pointer)
-    new += (create, tuple(temp))
-    
-  print(new)
 
   
-  return new
+  legal = move_x + "," + str(move_y)
+
   
-    
+
+
 
 
 
@@ -178,8 +144,8 @@ BLACK = [B_Pawn, B_Bish, B_Knig, B_Rook, B_Quee, B_King]
 
 #Move tuples
 
-White_moves = [("Testing", "Help"), ("modified", "unlikely")]
-#black_moves = [("Hoping", "Will work")]
+white_moves = [("Testing", "Help"), ("modified", "unlikely")]
+black_moves = [("Hoping", "Will work")]
 
 #white_moves += black_moves
 #print(white_moves[2][1])
@@ -224,9 +190,3 @@ while Playing:
 
   print(np.matrix(board))
 
-
-  #testing for [0, 4] index
-  if (0,4) in White_moves:
-    print("SUCCESS")
-  else:
-    print("FAIL")
