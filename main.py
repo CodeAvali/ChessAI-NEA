@@ -5,6 +5,7 @@ global board
 global White_Playing
 global White_moves
 global Black_moves 
+global Moves_Tuple
 space = ' '
 
 # (3) ----------- Functions ------------------
@@ -12,16 +13,18 @@ space = ' '
 def turn(Time_Stamp):
   if Time_Stamp % 2 == 1: 
     print(" Black Playing...") 
-    return False
+    Moves_Tuple = Black_moves
+    return False, Moves_Tuple
   else:
     print(" White Playing...")
-    return True
+    Moves_Tuple = White_moves
+    return True, Moves_Tuple
 
   #----
 
 def action(move_to, move_from):
 
-  #Normalise y to what is expecteD
+  #Normalise y to what is expected
   move_fromx, move_fromy = move_from.split(",")
   move_fromy = (int(move_fromy) - 9) * -1
   move_from = move_fromx + "," + str(move_fromy)
@@ -35,6 +38,8 @@ def action(move_to, move_from):
   move_to = tuple((int(x)-1) for x in move_to.split(","))
 
   return move_to, move_from 
+
+  #----
 
   #----
 
@@ -94,6 +99,22 @@ def perform(move_to, move_from, board):
     White_moves = clean(move_to, White_moves)
 
   return board 
+
+  #----
+
+def legal(move_to, move_from, move_space): 
+
+  print(move_space)
+
+  for i in range(len(move_space)):
+    print(move_to, move_space[i][0])
+    if move_from == move_space[i][0]:
+      print("TEST - 1")
+      if move_to == move_space[i][1]:
+        print("TEST - 2")
+        return True
+
+  return False
 
   #----
 
@@ -206,8 +227,8 @@ board = [[B_Rook, B_Knig, B_Bish, B_Quee, B_King, B_Bish, B_Knig, B_Rook],
         [W_Rook, W_Knig, W_Bish, W_Quee, W_King, W_Bish, W_Knig, W_Rook]]
 
 Moves_Tuple = []
-White_moves = []
-Black_moves = []
+White_moves = [((0, 6), (0, 5)), ((0, 6), (0, 4)), ((1, 6), (1, 5)), ((1, 6), (1, 4)), ((2, 6), (2, 5)), ((2, 6), (2, 4)), ((3, 6), (3, 5)), ((3, 6), (3, 4)), ((4, 6), (4, 5)), ((4, 6), (4, 4)), ((5, 6), (5, 5)), ((5, 6), (5, 4)), ((6, 6), (6, 5)), ((6, 6), (6, 4)), ((7, 6), (7, 5)), ((7, 6), (7, 4))]
+Black_moves = [((0, 1), (0, 2)), ((0, 1), (0, 2)), ((1, 1), (1, 2)), ((1, 1), (1, 2)),  ((2, 1), (2, 2)), ((2, 1), (2, 2)),  ((0, 1), (0, 2)), ((0, 1), (0, 2)),  ((0, 1), (0, 2)), ((0, 1), (0, 2)),  ((0, 1), (0, 2)), ((0, 1), (0, 2)),  ((0, 1), (0, 2)), ((0, 1), (0, 2)),  ((0, 1), (0, 2)), ((0, 1), (0, 2)),]
 
 #2. ----------- Performing a move --------------------
 
@@ -217,7 +238,7 @@ Time_Stamp = -1
 while Playing:
   #Pass the turn to the next player 
   Time_Stamp += 1 
-  White_Playing = turn(Time_Stamp)
+  White_Playing, Moves_Tuple = turn(Time_Stamp)
 
   #TESTS:
   print("TEST, White moves:", White_moves)
@@ -225,8 +246,9 @@ while Playing:
 
   # Asking the user for a move
   Valid = False
-  while not Valid: 
-    Valid = True
+  print("OUTER LOOP")
+  while not Valid:
+    print("INNER LOOP")
     #Get inputs from users - using string literals to produce visual spacing
     move_from = input(f"location to move from, (x,y) {space*10}")
     move_to = input(f"location to move to, (x,y) {space*12}")     
@@ -234,8 +256,12 @@ while Playing:
     #Process accordingly and normalise
     move_to, move_from = action(move_to, move_from)
 
+    print("TEST", move_to, move_from)
+
     #Perform exceptions; 
-    valid = absurd(move_to, move_from)
+    Valid = legal(move_to, move_from, Moves_Tuple)
+    absurd(move_to, move_from)
+
 
   #Printing inputs
   board = perform(move_to, move_from, board)
