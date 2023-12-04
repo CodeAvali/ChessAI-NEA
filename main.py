@@ -1,22 +1,20 @@
 #Live document for current work - Code Avali - Chessbot NEA
 
 import numpy as np
-space = ' '
-
+global board 
 global White_Playing
 global White_moves
 global Black_moves 
+space = ' '
 
-
-
-# (3). Turns function
+# (3) ----------- Functions ------------------
 
 def turn(Time_Stamp):
   if Time_Stamp % 2 == 1: 
-    print("TEST: Black Playing...") 
+    print(" Black Playing...") 
     return False
   else:
-    print("TEST: White Playing...")
+    print(" White Playing...")
     return True
 
   #----
@@ -68,42 +66,49 @@ def absurd(move_to, move_from):
 def perform(move_to, move_from, board):
 
   global White_moves
+  global Black_moves
+
+  Moves_Tuple = []
 
   #Performing moves
   print("TEST:", move_to, move_from)
-  
+
   peice = board[(move_from[1])][(move_from[0])]  #Collect moving peice into temp variable 
   board[(move_from[1])][(move_from[0])] = Empty_  #Remove moving peice
   board[(move_to[1])][(move_to[0])] = peice #Hence, write the peice into the location 
 
   #Check for peice to generate new moves
-  if peice == W_Pawn or peice == B_Pawn:
-    White_moves += pawn((move_to[0], move_to[1]), White_Playing)
-  elif peice == (W_Rook or B_Rook) or peice == (W_Queen or B_Queen):
-    White_moves = straight((move_to[0], move_to[1]), White_Playing)
+  if peice in (W_Pawn, B_Pawn):
+    Moves_Tuple += pawn((move_to[0], move_to[1]), White_Playing)
+  elif peice in (W_Rook, B_Rook, W_Quee, B_Quee):
+    Moves_Tuple += straight((move_to[0], move_to[1]))
 
-  #White_moves = clean(move_from, White_moves)
+  #Hence; store new to respective holder
+  if White_Playing:
+    White_moves += Moves_Tuple
+    White_moves = clean(move_from, White_moves)
+    Black_moves = clean(move_to, Black_moves)
+  else:
+    Black_moves += Moves_Tuple
+    Black_moves = clean(move_from, Black_moves)
+    White_moves = clean(move_to, White_moves)
 
-  print(White_moves)
-
-  return board
-
+  return board 
 
   #----
 
-def clean(move_from, moves):
-  cleaned = str(move_from[0]) + str(move_from[1])
-  #updated = tuple(x for x in moves_tuple if match(moves_tuple[x][0], cleaned, x))
-  updated = tuple(x for x in moves if match(moves[x][0], cleaned, moves[x]))
+def clean(delete, moves_structure):
 
+  kept = []
 
-  print(updated)
+  cleaned = tuple(delete)
+  for i in range(len(moves_structure)):
+    if moves_structure[i][0] != cleaned:
+      kept.append(moves_structure[i])
+    else:
+      print(moves_structure[i][0], cleaned)
 
-def match(move_from, cleaned, x):
-  if cleaned == (str(move_from[0]) + str(move_from[1])):
-    return True
-  else:
-    return False
+  return kept
 
   #----
 
@@ -114,69 +119,65 @@ def pawn(create, White_Playing):
 
   #Hence, create a tuple containing new moves 
 
-  new = ()
+  new = []
 
   if White_Playing:
     create_y -= 1
     temp = (create_x, create_y)  
+
     #Add any additional conditions - Capture; enpassant 
   else: 
     create_y += 1
-    temp = (create_x, create_y)                                #PERFECT METHOD for masked tuple - yayayaya
+    temp = (create_x, create_y)   
     #Add any additional conditions - Caputre; enpassant 
-    
-  new += (create, tuple(temp))   #PERFECT METHOD for masked tuple - yayayaya
-  print(new)
-  
+
+  temp = (create, tuple(temp))
+  new.append(temp)
+
   return new
 
   #-----
 
-def straight(create, White_playing):
+def straight(create):
   #from inital, collect the x and y components
 
   create_x, create_y = create[0], create[1]
 
   #Hence, create a tuple of new moves
 
-  new = ()
-  mod = ()
+  new = []
 
   x_pointer = create_x
   while x_pointer < 7:
     x_pointer += 1
     temp = (x_pointer, create_y)  
-    new += (create, tuple(temp))
+    temp = (create, tuple(temp))
+    new.append(temp)
   x_pointer = create_x
   while x_pointer > 0:
     x_pointer -= 1 
-    temp = (x_pointer, create_y)  
-    new += (create, tuple(temp))
+    temp = (x_pointer, create_y)
+    temp = (create, tuple(temp))
+    new.append(temp)
 
   y_pointer = create_y 
   while y_pointer < 7:
     y_pointer += 1
     temp = (create_x, y_pointer)  
-    new += (create, tuple(temp))
+    temp = (create, tuple(temp))
+    new.append(temp)
   y_pointer = create_y
   while y_pointer > 0:
     y_pointer -= 1 
     temp = (create_x, y_pointer)  
-    new += (create, tuple(temp))
-    
-  print(new)
+    temp = (create, tuple(temp))
+    new.append(temp)
 
-  
   return new
-  
-    
-
-
-
 
   #----
 
-# (1) Board creation 
+#1. ----------- Board creation -------------------
 
 W_Pawn = "♟︎"
 B_Pawn = "♙"
@@ -195,34 +196,32 @@ Empty_ = '_'
 WHITE = [W_Pawn, W_Bish, W_Knig, W_Rook, W_Quee, W_King]
 BLACK = [B_Pawn, B_Bish, B_Knig, B_Rook, B_Quee, B_King]
 
-#Move tuples
-
-White_moves = []
-#black_moves = [("Hoping", "Will work")]
-
-#white_moves += black_moves
-#print(white_moves[2][1])
-
 board = [[B_Rook, B_Knig, B_Bish, B_Quee, B_King, B_Bish, B_Knig, B_Rook],
-         [B_Pawn, B_Pawn, B_Pawn, B_Pawn, B_Pawn, B_Pawn, B_Pawn, B_Pawn],
-         [Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_],
-         [Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_],
-         [Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_],
-         [Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_],
-         [W_Pawn, W_Pawn, W_Pawn, W_Pawn, W_Pawn, W_Pawn, W_Pawn, W_Pawn], 
-         [W_Rook, W_Knig, W_Bish, W_Quee, W_King, W_Bish, W_Knig, W_Rook]]
+        [B_Pawn, B_Pawn, B_Pawn, B_Pawn, B_Pawn, B_Pawn, B_Pawn, B_Pawn],
+        [Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_],
+        [Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_],
+        [Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_],
+        [Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_, Empty_],
+        [W_Pawn, W_Pawn, W_Pawn, W_Pawn, W_Pawn, W_Pawn, W_Pawn, W_Pawn], 
+        [W_Rook, W_Knig, W_Bish, W_Quee, W_King, W_Bish, W_Knig, W_Rook]]
 
-#Printing the chessboard
-print(np.matrix(board))
+Moves_Tuple = []
+White_moves = []
+Black_moves = []
 
-#2. Performing a move
+#2. ----------- Performing a move --------------------
 
 Playing = True
+print(np.matrix(board))
 Time_Stamp = -1
 while Playing:
   #Pass the turn to the next player 
   Time_Stamp += 1 
   White_Playing = turn(Time_Stamp)
+
+  #TESTS:
+  print("TEST, White moves:", White_moves)
+  print("TEST, Black moves:", Black_moves)
 
   # Asking the user for a move
   Valid = False
@@ -242,10 +241,3 @@ while Playing:
   board = perform(move_to, move_from, board)
 
   print(np.matrix(board))
-
-
-  #testing for [0, 4] index
-  if (0,4) in White_moves:
-    print("SUCCESS")
-  else:
-    print("FAIL")
