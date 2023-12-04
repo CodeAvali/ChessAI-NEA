@@ -7,6 +7,8 @@ global White_Playing
 global White_moves
 global Black_moves 
 
+
+
 # (3). Turns function
 
 def turn(Time_Stamp):
@@ -65,6 +67,8 @@ def absurd(move_to, move_from):
 
 def perform(move_to, move_from, board):
 
+  global White_moves
+
   #Performing moves
   print("TEST:", move_to, move_from)
   
@@ -74,13 +78,32 @@ def perform(move_to, move_from, board):
 
   #Check for peice to generate new moves
   if peice == W_Pawn or peice == B_Pawn:
-    New_moves = pawn((move_to[0], move_to[1]), White_Playing)
+    White_moves += pawn((move_to[0], move_to[1]), White_Playing)
   elif peice == (W_Rook or B_Rook) or peice == (W_Queen or B_Queen):
-    New_moves = straight((move_to[0], move_to[1]), White_Playing)
+    White_moves = straight((move_to[0], move_to[1]), White_Playing)
 
-  White_moves = New_moves 
+  #White_moves = clean(move_from, White_moves)
+
+  print(White_moves)
 
   return board
+
+
+  #----
+
+def clean(move_from, moves):
+  cleaned = str(move_from[0]) + str(move_from[1])
+  #updated = tuple(x for x in moves_tuple if match(moves_tuple[x][0], cleaned, x))
+  updated = tuple(x for x in moves if match(moves[x][0], cleaned, moves[x]))
+
+
+  print(updated)
+
+def match(move_from, cleaned, x):
+  if cleaned == (str(move_from[0]) + str(move_from[1])):
+    return True
+  else:
+    return False
 
   #----
 
@@ -94,18 +117,15 @@ def pawn(create, White_Playing):
   new = ()
 
   if White_Playing:
-    print("White playing", new)
     create_y -= 1
-    temp = str(create_x) + "" + str(create_y)
-    new += (create, tuple(temp))
+    temp = (create_x, create_y)  
     #Add any additional conditions - Capture; enpassant 
   else: 
     create_y += 1
-    temp = (create_x, create_y)
-    new += (create, tuple(temp))                                 #PERFECT METHOD for masked tuple - yayayaya
+    temp = (create_x, create_y)                                #PERFECT METHOD for masked tuple - yayayaya
     #Add any additional conditions - Caputre; enpassant 
     
-
+  new += (create, tuple(temp))   #PERFECT METHOD for masked tuple - yayayaya
   print(new)
   
   return new
@@ -125,24 +145,23 @@ def straight(create, White_playing):
   x_pointer = create_x
   while x_pointer < 7:
     x_pointer += 1
-    temp = str(x_pointer) + "" + str(create_y)
+    temp = (x_pointer, create_y)  
     new += (create, tuple(temp))
   x_pointer = create_x
   while x_pointer > 0:
     x_pointer -= 1 
-    temp = str(x_pointer) + "" + str(create_y)
-    temp = tuple(temp)
+    temp = (x_pointer, create_y)  
     new += (create, tuple(temp))
 
   y_pointer = create_y 
   while y_pointer < 7:
     y_pointer += 1
-    temp = str(create_x) + "" + str(y_pointer)
+    temp = (create_x, y_pointer)  
     new += (create, tuple(temp))
   y_pointer = create_y
   while y_pointer > 0:
     y_pointer -= 1 
-    temp = str(create_x) + "" + str(y_pointer)
+    temp = (create_x, y_pointer)  
     new += (create, tuple(temp))
     
   print(new)
@@ -178,7 +197,7 @@ BLACK = [B_Pawn, B_Bish, B_Knig, B_Rook, B_Quee, B_King]
 
 #Move tuples
 
-White_moves = [("Testing", "Help"), ("modified", "unlikely")]
+White_moves = []
 #black_moves = [("Hoping", "Will work")]
 
 #white_moves += black_moves
