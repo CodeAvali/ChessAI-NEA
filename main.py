@@ -61,7 +61,7 @@ def absurd(move_to, move_from):
       Exception += 'MOVE VALDIATION: You cannot move to a black peice as White'
 
   if Exception != '':
-    print(Exception)
+    print(Error)
     return False
   else: 
     return True 
@@ -76,7 +76,7 @@ def perform(move_to, move_from, board):
   Moves_Tuple = []
 
   #Performing moves
-  print("TEST:", move_to, move_from)
+  #print("TEST:", move_to, move_from)
 
   peice = board[(move_from[1])][(move_from[0])]  #Collect moving peice into temp variable 
   board[(move_from[1])][(move_from[0])] = Empty_  #Remove moving peice
@@ -85,6 +85,8 @@ def perform(move_to, move_from, board):
   #Check for peice to generate new moves
   if peice in (W_Pawn, B_Pawn):
     Moves_Tuple += pawn((move_to[0], move_to[1]), White_Playing)
+  elif peice in (W_Knig, B_Knig):
+    Moves_Tuple += knight((move_to[0], move_to[1]))
   elif peice in (W_Rook, B_Rook, W_Quee, B_Quee):
     Moves_Tuple += straight((move_to[0], move_to[1]))
 
@@ -104,10 +106,10 @@ def perform(move_to, move_from, board):
 
 def legal(move_to, move_from, move_space): 
 
-  print(move_space)
+  #print(move_space)
 
   for i in range(len(move_space)):
-    print(move_to, move_space[i][0])
+    #print(move_to, move_space[i][0])
     if move_from == move_space[i][0]:
       print("TEST - 1")
       if move_to == move_space[i][1]:
@@ -126,8 +128,8 @@ def clean(delete, moves_structure):
   for i in range(len(moves_structure)):
     if moves_structure[i][0] != cleaned:
       kept.append(moves_structure[i])
-    else:
-      print(moves_structure[i][0], cleaned)
+    #else:
+      #print(moves_structure[i][0], cleaned)
 
   return kept
 
@@ -198,6 +200,39 @@ def straight(create):
 
   #----
 
+def diagonal():
+  raise NotImplemented            #TO DO: Obviously
+
+  #----
+
+def knight(create):
+
+  print("Horsing around!")
+
+  pivot = []
+  new = []
+  create_x, create_y = create[0], create[1]
+
+  #hence, create tuple of new moves
+  pivot.append((create_x + 2, create_y + 1))       #Will format later to a bland tuple 
+  pivot.append((create_x - 2, create_y + 1))
+  pivot.append((create_x + 2, create_y - 1))
+  pivot.append((create_x - 2, create_y - 1))
+  pivot.append((create_x + 1, create_y + 2))
+  pivot.append((create_x - 1, create_y + 2))
+  pivot.append((create_x + 1, create_y - 2))
+  pivot.append((create_x - 1, create_y + 2))
+
+  for i in range(len(pivot)-1):
+    if pivot[i][0] < 8 and pivot[i][0] >= 0:
+      if pivot[i][1] < 8 and pivot[i][1] >= 0:
+        temp = (create, tuple(pivot[i]))
+        new.append(temp)
+
+  print(new)
+
+  return new
+
 #1. ----------- Board creation -------------------
 
 W_Pawn = "♟︎"
@@ -227,8 +262,8 @@ board = [[B_Rook, B_Knig, B_Bish, B_Quee, B_King, B_Bish, B_Knig, B_Rook],
         [W_Rook, W_Knig, W_Bish, W_Quee, W_King, W_Bish, W_Knig, W_Rook]]
 
 Moves_Tuple = []
-White_moves = [((0, 6), (0, 5)), ((0, 6), (0, 4)), ((1, 6), (1, 5)), ((1, 6), (1, 4)), ((2, 6), (2, 5)), ((2, 6), (2, 4)), ((3, 6), (3, 5)), ((3, 6), (3, 4)), ((4, 6), (4, 5)), ((4, 6), (4, 4)), ((5, 6), (5, 5)), ((5, 6), (5, 4)), ((6, 6), (6, 5)), ((6, 6), (6, 4)), ((7, 6), (7, 5)), ((7, 6), (7, 4))]
-Black_moves = [((0, 1), (0, 2)), ((0, 1), (0, 2)), ((1, 1), (1, 2)), ((1, 1), (1, 2)),  ((2, 1), (2, 2)), ((2, 1), (2, 2)),  ((0, 1), (0, 2)), ((0, 1), (0, 2)),  ((0, 1), (0, 2)), ((0, 1), (0, 2)),  ((0, 1), (0, 2)), ((0, 1), (0, 2)),  ((0, 1), (0, 2)), ((0, 1), (0, 2)),  ((0, 1), (0, 2)), ((0, 1), (0, 2)),]
+White_moves = [((0, 6), (0, 5)), ((0, 6), (0, 4)), ((1, 6), (1, 5)), ((1, 6), (1, 4)), ((2, 6), (2, 5)), ((2, 6), (2, 4)), ((3, 6), (3, 5)), ((3, 6), (3, 4)), ((4, 6), (4, 5)), ((4, 6), (4, 4)), ((5, 6), (5, 5)), ((5, 6), (5, 4)), ((6, 6), (6, 5)), ((6, 6), (6, 4)), ((7, 6), (7, 5)), ((7, 6), (7, 4)), ((1, 7), (0, 5)), ((1, 7), (2, 5)), ((6, 7), (5, 4)), ((6, 7), (7, 5))]
+Black_moves = [((0, 1), (0, 2)), ((0, 1), (0, 3)), ((1, 1), (1, 2)), ((1, 1), (1, 3)),  ((2, 1), (2, 2)), ((2, 1), (2, 3)),  ((3, 1), (3, 2)), ((3, 1), (3, 3)),  ((4, 1), (4, 2)), ((4, 1), (4, 3)),  ((5, 1), (5, 2)), ((5, 1), (5, 3)),  ((6, 1), (6, 2)), ((6, 1), (6, 3)),  ((7, 1), (7, 2)), ((7, 1), (7, 3))]
 
 #2. ----------- Performing a move --------------------
 
@@ -241,8 +276,8 @@ while Playing:
   White_Playing, Moves_Tuple = turn(Time_Stamp)
 
   #TESTS:
-  print("TEST, White moves:", White_moves)
-  print("TEST, Black moves:", Black_moves)
+  #print("TEST, White moves:", White_moves)
+  #print("TEST, Black moves:", Black_moves)
 
   # Asking the user for a move
   Valid = False
