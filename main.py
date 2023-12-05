@@ -89,6 +89,8 @@ def perform(move_to, move_from, board):
     Moves_Tuple += knight((move_to[0], move_to[1]))
   elif peice in (W_Rook, B_Rook, W_Quee, B_Quee):
     Moves_Tuple += straight((move_to[0], move_to[1]))
+  elif peice in (W_Bish, B_Bish, W_Quee, B_Quee):
+    Moves_Tuple += diagonal((move_to[0], move_to[1]))
 
   #Hence; store new to respective holder
   if White_Playing:
@@ -200,8 +202,43 @@ def straight(create):
 
   #----
 
-def diagonal():
-  raise NotImplemented            #TO DO: Obviously
+def diagonal(create):
+
+  #Hence, create a tuple of new moves
+  new = []
+  create_x, create_y = create[0], create[1]
+
+  x_pointer, y_pointer = create_x, create_y
+  while x_pointer < 7 and y_pointer < 7:
+    x_pointer += 1
+    y_pointer += 1 
+    temp = (x_pointer, y_pointer)
+    temp = (create, tuple(temp))
+    new.append(temp)
+  x_pointer, y_pointer = create_x, create_y
+  while x_pointer > 0 and y_pointer < 7:
+    x_pointer -= 1
+    y_pointer += 1 
+    temp = (x_pointer, y_pointer)
+    temp = (create, tuple(temp))
+    new.append(temp)
+  x_pointer, y_pointer = create_x, create_y
+  while x_pointer < 7 and y_pointer > 0:
+    x_pointer += 1
+    y_pointer -= 1
+    temp = (x_pointer, y_pointer)
+    temp = (create, tuple(temp))
+    new.append(temp)
+  x_pointer, y_pointer = create_x, create_y 
+  while x_pointer > 0 and y_pointer > 0:
+    x_pointer -= 1
+    y_pointer -= 1
+    temp = (x_pointer, y_pointer)
+    temp = (create, tuple(temp))
+    new.append(temp)
+
+  return new 
+  
 
   #----
 
@@ -262,7 +299,7 @@ board = [[B_Rook, B_Knig, B_Bish, B_Quee, B_King, B_Bish, B_Knig, B_Rook],
         [W_Rook, W_Knig, W_Bish, W_Quee, W_King, W_Bish, W_Knig, W_Rook]]
 
 Moves_Tuple = []
-White_moves = [((0, 6), (0, 5)), ((0, 6), (0, 4)), ((1, 6), (1, 5)), ((1, 6), (1, 4)), ((2, 6), (2, 5)), ((2, 6), (2, 4)), ((3, 6), (3, 5)), ((3, 6), (3, 4)), ((4, 6), (4, 5)), ((4, 6), (4, 4)), ((5, 6), (5, 5)), ((5, 6), (5, 4)), ((6, 6), (6, 5)), ((6, 6), (6, 4)), ((7, 6), (7, 5)), ((7, 6), (7, 4)), ((1, 7), (0, 5)), ((1, 7), (2, 5)), ((6, 7), (5, 4)), ((6, 7), (7, 5))]
+White_moves = [((0, 6), (0, 5)), ((0, 6), (0, 4)), ((1, 6), (1, 5)), ((1, 6), (1, 4)), ((2, 6), (2, 5)), ((2, 6), (2, 4)), ((3, 6), (3, 5)), ((3, 6), (3, 4)), ((4, 6), (4, 5)), ((4, 6), (4, 4)), ((5, 6), (5, 5)), ((5, 6), (5, 4)), ((6, 6), (6, 5)), ((6, 6), (6, 4)), ((7, 6), (7, 5)), ((7, 6), (7, 4)), ((1, 7), (0, 5)), ((1, 7), (2, 5)), ((6, 7), (5, 4)), ((6, 7), (7, 5)), ((2, 7), (1,6))]
 Black_moves = [((0, 1), (0, 2)), ((0, 1), (0, 3)), ((1, 1), (1, 2)), ((1, 1), (1, 3)),  ((2, 1), (2, 2)), ((2, 1), (2, 3)),  ((3, 1), (3, 2)), ((3, 1), (3, 3)),  ((4, 1), (4, 2)), ((4, 1), (4, 3)),  ((5, 1), (5, 2)), ((5, 1), (5, 3)),  ((6, 1), (6, 2)), ((6, 1), (6, 3)),  ((7, 1), (7, 2)), ((7, 1), (7, 3))]
 
 #2. ----------- Performing a move --------------------
